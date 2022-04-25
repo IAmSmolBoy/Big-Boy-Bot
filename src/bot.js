@@ -6,7 +6,7 @@ const client = new Client({ intents: [Intents.FLAGS.GUILD_MEMBERS, "GUILDS", "GU
 "GUILD_WEBHOOKS", "GUILD_INVITES", "GUILD_VOICE_STATES", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS", "GUILD_MESSAGE_TYPING", 
 "DIRECT_MESSAGES", "DIRECT_MESSAGE_REACTIONS", "DIRECT_MESSAGE_TYPING", "GUILD_SCHEDULED_EVENTS"], partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })
 const commands = require("./commands")
-var prefix = "$"
+var prefix = "/"
 const commandDict = {
     clear: {
         commandFunc: commands.clear, 
