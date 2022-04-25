@@ -1,4 +1,4 @@
-const Char = require("./models/character"), Enemy = require("./models/enemy"), Task = require("./models/task"), compHours = require("./models/compHours"), rr = require("./models/rr")
+const Task = require("./models/task"), compHours = require("./models/compHours"), rr = require("./models/rr")
 const { MessageEmbed, MessageCollector } = require('discord.js');
 var prefix = "$"
 
