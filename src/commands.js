@@ -201,5 +201,4 @@ function helpMenu(msg, commandDict, pageNo = 1) {
 module.exports = {
     clear, addDeadline, addHours, viewHours, deleteHours, viewLeaderboard,
     addRRMsg, addRoles, helpMenu
-    
 }
