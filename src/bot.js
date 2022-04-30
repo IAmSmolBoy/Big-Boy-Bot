@@ -11,46 +11,46 @@ const commandDict = {
     clear: {
         commandFunc: commands.clear, 
         description: "Deletes specified number of messages", 
-        format: "$clear <number of messages to delete>"
+        format: `${prefix}clear <number of messages to delete>`
     },
     addtask: {
         commandFunc: commands.addDeadline,
         description: "Adds a deadline on a specific date and time. The bot will remind you 5 days before, 1 day before and an hour before",
-        format: "$addtask <optional: DD/MM/YYYY> <hh:mm:ss> <@role> <optional: #channel>"
+        format: `${prefix}addtask <optional: DD/MM/YYYY> <hh:mm:ss> <@role> <optional: #channel>`
     },
     comp: {
         commandFunc: commands.addHours,
         description: "Adds hours to database for studying competition",
-        format: "$comp <hours>"
+        format: `${prefix}comp <hours>`
     },
     hrs: {
         commandFunc: commands.viewHours,
         description: "Views the number of hours you have accumulated",
-        format: "$hrs"
+        format: `${prefix}hrs`
     },
     delprev: {
         commandFunc: commands.deleteHours,
         description: "Deletes the last input of hours",
-        format: "$delprev"
+        format: `${prefix}delprev`
     },
     rrmsg: {
         commandFunc: commands.addRRMsg,
         description: "Adds a reaction role message",
-        format: "$rrmsg <optional: channel>"
+        format: `${prefix}rrmsg <optional: channel>`
     },
     rr: {
         commandFunc: commands.addRoles,
         description: "Adds a reaction role to the message",
-        format: "$rr <emoji> <role>"
+        format: `${prefix}rr <emoji> <role>`
     },
     vl: {
         commandFunc: commands.viewLeaderboard,
         description: "View studying competition leaderboard",
-        format: "$vl"
+        format: `${prefix}vl`
     },
     help: {
         description: "Helps with the bot's commands",
-        format: "$help <optional: command name or page no.>"
+        format: `${prefix}help <optional: command name or page no.>`
     }
 }
 
