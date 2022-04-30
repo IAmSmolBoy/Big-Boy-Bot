@@ -1,6 +1,6 @@
 const Task = require("./models/task"), compHours = require("./models/compHours"), rr = require("./models/rr")
 const { MessageEmbed, MessageCollector } = require('discord.js');
-var prefix = "$"
+var prefix = "."
 
 function clear(msg, args, format) {
     if (args.length != 1 || isNaN(args[0])) return msg.channel.send("Invalid arguments. Format: " + format)
@@ -194,7 +194,7 @@ function helpMenu(msg, commandDict, pageNo = 1) {
         }
     });
     var helpText = helpMenu.join("\n")
-    if (pageNo * 6 < Object.keys(commandDict).length) helpText += `\nUse $help ${pageNo + 1} for the next page`
+    if (pageNo * 6 < Object.keys(commandDict).length) helpText += `\nUse ${prefix}help ${pageNo + 1} for the next page`
     return msg.channel.send(`**Command Guide Page ${pageNo}**\n` + helpText)
 }
 
