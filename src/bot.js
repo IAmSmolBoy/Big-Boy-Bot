@@ -48,6 +48,11 @@ const commandDict = {
         description: "View studying competition leaderboard",
         format: `${prefix}vl`
     },
+    resetcomp: {
+        commandFunc: commands.resetComp,
+        description: "Reset everyone's hours",
+        format: `${prefix}resetcomp`
+    },
     help: {
         description: "Helps with the bot's commands",
         format: `${prefix}help <optional: command name or page no.>`
@@ -56,6 +61,7 @@ const commandDict = {
 
 client.on("ready", async () => {
     console.log(`I'm inferior bot. ${client.user.username}`)
+    client.user.setActivity(".help for help")
     setInterval(async () => {
         const tasks = await Task.find()
         tasks.forEach(async (e) => {
