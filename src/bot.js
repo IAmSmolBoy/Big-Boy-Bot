@@ -62,11 +62,12 @@ const commandDict = {
 client.on("ready", async () => {
     console.log(`I'm inferior bot. ${client.user.username}`)
     client.user.setActivity(".help for help")
-    const todayDate = new Date()
-    todayDate.setHours(todayDate.getHours() + 8)
     setInterval(async () => {
+        const todayDate = new Date()
+        todayDate.setHours(todayDate.getHours() + 8)
         const tasks = await Task.find()
         tasks.forEach(async (e) => {
+            console.log(e, todayDate)
             const SmolBoyServ = await client.guilds.fetch(e.guild)
             const taskChannel = await SmolBoyServ.channels.fetch(e.channel)
             if (todayDate >= e.dateTime && todayDate.getTime() >= e.dateTime.getTime()) {
