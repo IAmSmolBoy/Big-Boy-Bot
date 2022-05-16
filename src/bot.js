@@ -67,7 +67,7 @@ client.on("ready", async () => {
         todayDate.setHours(todayDate.getHours() + 8)
         const tasks = await Task.find()
         tasks.forEach(async (e) => {
-            console.log(e, todayDate)
+            // console.log(e, todayDate)
             const SmolBoyServ = await client.guilds.fetch(e.guild)
             const taskChannel = await SmolBoyServ.channels.fetch(e.channel)
             if (todayDate >= e.dateTime && todayDate.getTime() >= e.dateTime.getTime()) {
