@@ -16,23 +16,23 @@ const commandDict = {
     addtask: {
         commandFunc: commands.addDeadline,
         description: "Adds a deadline on a specific date and time. The bot will remind you 5 days before, 1 day before and an hour before",
-        format: `${prefix}addtask <optional: DD/MM/YYYY> <hh:mm:ss> <@role> <optional: #channel>`
+        format: `${prefix}addtask <optional: DD/MM/YYYY> <hh:mm:ss> <optional: @role> <optional: #channel>`
     },
-    comp: {
-        commandFunc: commands.addHours,
-        description: "Adds hours to database for studying competition",
-        format: `${prefix}comp <hours>`
-    },
-    hrs: {
-        commandFunc: commands.viewHours,
-        description: "Views the number of hours you have accumulated",
-        format: `${prefix}hrs`
-    },
-    delprev: {
-        commandFunc: commands.deleteHours,
-        description: "Deletes the last input of hours",
-        format: `${prefix}delprev`
-    },
+    // comp: {
+    //     commandFunc: commands.addHours,
+    //     description: "Adds hours to database for studying competition",
+    //     format: `${prefix}comp <hours>`
+    // },
+    // hrs: {
+    //     commandFunc: commands.viewHours,
+    //     description: "Views the number of hours you have accumulated",
+    //     format: `${prefix}hrs`
+    // },
+    // delprev: {
+    //     commandFunc: commands.deleteHours,
+    //     description: "Deletes the last input of hours",
+    //     format: `${prefix}delprev`
+    // },
     rrmsg: {
         commandFunc: commands.addRRMsg,
         description: "Adds a reaction role message",
@@ -43,16 +43,16 @@ const commandDict = {
         description: "Adds a reaction role to the message",
         format: `${prefix}rr <emoji> <role>`
     },
-    vl: {
-        commandFunc: commands.viewLeaderboard,
-        description: "View studying competition leaderboard",
-        format: `${prefix}vl`
-    },
-    resetcomp: {
-        commandFunc: commands.resetComp,
-        description: "Reset everyone's hours",
-        format: `${prefix}resetcomp`
-    },
+    // vl: {
+    //     commandFunc: commands.viewLeaderboard,
+    //     description: "View studying competition leaderboard",
+    //     format: `${prefix}vl`
+    // },
+    // resetcomp: {
+    //     commandFunc: commands.resetComp,
+    //     description: "Reset everyone's hours",
+    //     format: `${prefix}resetcomp`
+    // },
     help: {
         description: "Helps with the bot's commands",
         format: `${prefix}help <optional: command name or page no.>`

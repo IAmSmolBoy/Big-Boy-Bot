@@ -21,7 +21,7 @@ async function addDeadline(msg, args, format) {
     channel = channel.id
     const twoDigits = (str) => `${str}`.length === 1 ? "0" + `${str}` : `${str}`
 
-    if (args.length > 1 && args.length < 5) {
+    if (args.length > 0 && args.length < 5) {
         var timeIdx = 0
         if (args[0].split("/").length === 1 && args[0].split(":").length === 3) {
                 date = [today.getFullYear(), today.getMonth() + 1, today.getDate()].map(twoDigits)
@@ -42,7 +42,7 @@ async function addDeadline(msg, args, format) {
     if (taskInfo.includes(undefined) || taskInfo.includes(null)) return msg.channel.send("Invalid arguments. Format: " + format)
     const formatted = `${date.join("-")}T${time.join(":")}`
 
-    msg.channel.send("Send the reminder timiings. Format: <number> <units> Example: 1 day, 2 day, 5 hour (Units: month, week, day, or hour)")
+    msg.channel.send("Send the reminder timings. Format: <number> <units> Example: 1 day, 2 day, 5 hour (Units: month, week, day, or hour)")
     const modCollector = new MessageCollector(msg.channel), modTypes = [ "month", "week", "day", "hour", "months", "weeks", "days", "hours" ]
 
     modCollector.on("collect", async (msgCollected) => {
