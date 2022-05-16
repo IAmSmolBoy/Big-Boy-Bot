@@ -11,7 +11,9 @@ const taskSchema = new Schema({
         required: true
     },
     msgContent: reqStr,
-    role: reqStr,
+    role: {
+        type: String,
+    },
     channel: reqStr,
     guild: reqStr,
 })

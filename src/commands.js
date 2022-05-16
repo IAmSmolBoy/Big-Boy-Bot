@@ -38,7 +38,7 @@ async function addDeadline(msg, args, format) {
             }
         }
     }
-    const taskInfo = [ date, time, role, channel ]
+    const taskInfo = [ date, time, channel ]
     if (taskInfo.includes(undefined) || taskInfo.includes(null)) return msg.channel.send("Invalid arguments. Format: " + format)
     const formatted = `${date.join("-")}T${time.join(":")}`
 
