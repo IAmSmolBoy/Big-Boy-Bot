@@ -2,7 +2,7 @@ require("./init_mongodb")
 require("dotenv").config()
 
 const { Client, Intents } = require("discord.js"), Task = require("./models/task"), rr = require("./models/rr")
-const client = new Client({ intents: [Intents.FLAGS.GUILD_MEMBERS, "GUILDS", "GUILD_BANS", "GUILD_EMOJIS_AND_STICKERS", "GUILD_INTEGRATIONS", 
+const client = new Client({ intents: [ "GUILDS", "GUILD_BANS", "GUILD_EMOJIS_AND_STICKERS", "GUILD_INTEGRATIONS", 
 "GUILD_WEBHOOKS", "GUILD_INVITES", "GUILD_VOICE_STATES", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS", "GUILD_MESSAGE_TYPING", 
 "DIRECT_MESSAGES", "DIRECT_MESSAGE_REACTIONS", "DIRECT_MESSAGE_TYPING", "GUILD_SCHEDULED_EVENTS"], partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })
 const commands = require("./commands")
@@ -62,12 +62,13 @@ const commandDict = {
 client.on("ready", async () => {
     console.log(`I'm inferior bot. ${client.user.username}`)
     client.user.setActivity(".help for help")
+    const todayDate = new Date()
+    todayDate.setHours(todayDate.getHours() + 8)
     setInterval(async () => {
         const tasks = await Task.find()
         tasks.forEach(async (e) => {
             const SmolBoyServ = await client.guilds.fetch(e.guild)
-            const taskChannel = await SmolBoyServ.channels.fetch(e.channel), todayDate = new Date()
-            todayDate.setHours(todayDate.getHours() + 8)
+            const taskChannel = await SmolBoyServ.channels.fetch(e.channel)
             if (todayDate >= e.dateTime && todayDate.getTime() >= e.dateTime.getTime()) {
                 taskChannel.send(`${e.role}, ${e.msgContent}`)
                 await Task.deleteOne(e)
