@@ -1,11 +1,12 @@
 require("./init_mongodb")
 require("dotenv").config()
 
-const { Client, Intents } = require("discord.js"), Task = require("./models/task"), rr = require("./models/rr")
+const { Client } = require("discord.js"), Task = require("./models/task"), rr = require("./models/rr"), reminder = require("./models/reminder")
 const client = new Client({ intents: [ "GUILDS", "GUILD_BANS", "GUILD_EMOJIS_AND_STICKERS", "GUILD_INTEGRATIONS", 
 "GUILD_WEBHOOKS", "GUILD_INVITES", "GUILD_VOICE_STATES", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS", "GUILD_MESSAGE_TYPING", 
 "DIRECT_MESSAGES", "DIRECT_MESSAGE_REACTIONS", "DIRECT_MESSAGE_TYPING", "GUILD_SCHEDULED_EVENTS"], partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })
 const commands = require("./commands")
+const Reminder = require("./models/reminder")
 var prefix = "."
 const commandDict = {
     clear: {
@@ -15,8 +16,13 @@ const commandDict = {
     },
     addtask: {
         commandFunc: commands.addDeadline,
-        description: "Adds a deadline on a specific date and time. The bot will remind you 5 days before, 1 day before and an hour before",
+        description: "The bot reminds you of an occassion hours, days, weeks or months before it depending on when you set it",
         format: `${prefix}addtask <optional: DD/MM/YYYY> <hh:mm:ss> <optional: @role> <optional: #channel>`
+    },
+    reminder: {
+        commandFunc: commands.reminder,
+        description: "Adds a daily/weekly at a specific day and time of the week.",
+        format: `${prefix}reminder <optional: day [ddd]> <hh:mm:ss> <optional: @role>`
     },
     // comp: {
     //     commandFunc: commands.addHours,
@@ -53,6 +59,11 @@ const commandDict = {
     //     description: "Reset everyone's hours",
     //     format: `${prefix}resetcomp`
     // },
+    // clearRR: {
+    //     commandFunc: commands.clearRR,
+    //     description: "Adds a reaction role to the message",
+    //     format: `${prefix}rr <emoji>`
+    // },
     help: {
         description: "Helps with the bot's commands",
         format: `${prefix}help <optional: command name or page no.>`
@@ -62,19 +73,31 @@ const commandDict = {
 client.on("ready", async () => {
     console.log(`I'm inferior bot. ${client.user.username}`)
     client.user.setActivity(".help for help")
+    // client.user.setActivity("Maintenance")
     setInterval(async () => {
         const todayDate = new Date()
         todayDate.setHours(todayDate.getHours() + 8)
-        const tasks = await Task.find()
-        tasks.forEach(async (e) => {
+        const tasks = await Task.find(), reminders = await Reminder.find()
+        tasks.forEach(async e => {
             // console.log(e, todayDate)
             const SmolBoyServ = await client.guilds.fetch(e.guild)
             const taskChannel = await SmolBoyServ.channels.fetch(e.channel)
             if (todayDate >= e.dateTime && todayDate.getTime() >= e.dateTime.getTime()) {
-                taskChannel.send(`${e.role}, ${e.msgContent}`)
+                taskChannel.send(e.role ? `${e.role}, ${e.msgContent}` : e.msgContent)
                 await Task.deleteOne(e)
             }
         })
+        reminders.forEach(
+            async r => {
+                const server = await client.guilds.fetch(r.guild)
+                const taskChannel = await server.channels.fetch(r.channel)
+                timeVals = [ todayDate.getHours(), todayDate.getMinutes(), todayDate.getSeconds() ]
+                // console.log(timeVals, r.time)
+                if (r.time.every(
+                    (time, i) => i === 2 ? time > timeVals[i] - 10 && time < timeVals[i] + 10 : time === timeVals[i]
+                )) taskChannel.send(r.role ? `${r.role}, ${r.activity}` : r.activity)
+            }
+        )
     }, 10000);
 })
 

@@ -1,4 +1,4 @@
-const Task = require("./models/task"), compHours = require("./models/compHours"), rr = require("./models/rr")
+const Task = require("./models/task"), compHours = require("./models/compHours"), rr = require("./models/rr"), Reminder = require("./models/reminder")
 const { MessageEmbed, MessageCollector } = require('discord.js');
 var prefix = "."
 
@@ -10,7 +10,7 @@ function clear(msg, args, format) {
         msg.channel
             .bulkDelete(parseInt(args[0]) + 1)
             .catch(err => {
-                console.log(err)
+                // console.log(err)
                 return msg.channel.send("Oh god, what is happ_ **explosion**\nU cannot delete messages that are more than 14 days old.")
             })
     }
@@ -199,6 +199,7 @@ async function addRRMsg(msg, args, format) {
 async function addRoles(msg, args, format) {
     if (!msg.member.permissions.has('ADMINISTRATOR')) return msg.channel.send("This command is only for admins.")
     if (args.length < 2 || args.length > 4 || msg.mentions.roles.size < 1) return msg.channel.send("Invalid arguments. Format: " + format)
+    if (!msg.reference) return msg.channel.send("You need to reply to a message generated from .rrmsg")
     var channel = msg.mentions.channels.first() || msg.channel, msgId = msg.reference.messageId, emoji;
     if (msg.content.split(":").length === 3) emoji = msg.content.split(":")[1]
     else emoji =  args[0]
@@ -216,6 +217,74 @@ async function addRoles(msg, args, format) {
 async function resetComp (msg, args, format) {
     await compHours.deleteMany({})
     return msg.channel.send("Competition reset")
+}
+
+async function reminder(msg, args, format) {
+    var today = new Date()
+    today.setHours(today.getHours() + 8)
+    // console.log(today.toLocaleTimeString(), today.getDay())
+    const days = [
+        [ "sun", "sunday" ],
+        [ "mon", "monday" ],
+        [ "tue", "tuesday" ],
+        [ "wed", "wednesday" ],
+        [ "thu", "thurs", "thursday" ],
+        [ "fri", "friday" ],
+        [ "sat", "saturday" ]
+    ]
+    var day = today.getDay(), time, role, channel = msg.mentions.channels.first() || msg.channel
+    const guild = msg.guild.id
+    channel = channel.id
+    args.forEach(
+        arg => {
+            var [ dayCollected, timeCollected, roleCollected ] = Array(3).fill(false)
+            days.forEach(
+                (dayVal, i) => {
+                    if (!dayCollected && 
+                        isNaN(arg) && 
+                        dayVal.includes(arg.toLowerCase())
+                    ) {
+                        day = i
+                        dayCollected = true
+                    }
+                }
+            )
+            if (!timeCollected && 
+                arg.split(":").length === 3 && 
+                arg.split(":").every(
+                    timeVal => timeVal.length > 0 && !isNaN(timeVal) && parseInt(timeVal) < 60
+                )
+            ) {
+                time = arg.split(":").map(
+                    timeVal => parseInt(timeVal)
+                )
+                timeCollected = true
+            }
+            if (!roleCollected && 
+                (arg.startsWith("<@") && 
+                arg.endsWith(">")) ||
+                arg.startsWith("@")
+            ) {
+                role = arg
+                roleCollected = true
+            }
+        }
+    )
+    // console.log(day, time, role)
+    if (!((day || day === "0") && time)) return msg.channel.send(`Invalid arguments. Format: ${format}`)
+    const collector = new MessageCollector(msg.channel)
+    msg.channel.send("Please send your desired reminder message.")
+    collector.on("collect",
+        async msgCollected => {
+            if (msgCollected.author.id === msg.author.id) {
+                const remind = new Reminder({ day, time, activity: msgCollected.content, role, channel, guild,  })
+                await remind.save()
+                msg.channel.send("Reminder saved")
+                collector.stop()
+            }
+        }
+    )
+    // const remind = new Reminder({ day, time, role })
 }
 
 function helpMenu(msg, commandDict, pageNo = 1) {
@@ -241,7 +310,12 @@ function helpMenu(msg, commandDict, pageNo = 1) {
     return msg.channel.send(`**Command Guide Page ${pageNo}**\n` + helpText)
 }
 
+// function clearRR(msg, args, format) {
+
+// }
+
 module.exports = {
     clear, addDeadline, addHours, viewHours, deleteHours, viewLeaderboard,
-    addRRMsg, addRoles, resetComp, helpMenu
+    addRRMsg, addRoles, resetComp, reminder, helpMenu, 
+    // clearRR
 }
