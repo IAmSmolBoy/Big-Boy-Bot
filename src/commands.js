@@ -3,10 +3,10 @@ const { MessageEmbed, MessageCollector } = require('discord.js');
 var prefix = "."
 
 function clear(msg, args, format) {
-    if (args.length != 1 || isNaN(args[0])) return msg.channel.send("Invalid arguments. Format: " + format)
-    else if (args === ["all"]) while (true) msg.channel.bulkDelete(99).catch(err => msg.channel.send("That's as much as I cna delete, good luck with the rest"))
+    if (args.length !== 1) return msg.channel.send("Invalid arguments. Format: " + format)
+    else if (args === ["all"]) while (true) msg.channel.bulkDelete(99).catch(err => msg.channel.send("That's as much as I can delete, good luck with the rest"))
     // else if (!msg.member.permissions.has('ADMINISTRATOR')) return msg.channel.send("Too bad. U need admin to delete :(")
-    else {
+    else if (isNaN(args[0])) {
         const catchFunc = (err) => msg.channel.send("Oh god, what is happ_ **explosion**\nU cannot delete messages that are more than 14 days old.", err),
         msgIterations =  Math.floor(parseInt(args[0]) / 100)
         for (i = 0; i < msgIterations; i++) msg.channel.bulkDelete(99).catch(catchFunc)
