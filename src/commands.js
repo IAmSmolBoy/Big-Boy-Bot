@@ -81,7 +81,7 @@ async function addDeadline(msg, args, format) {
                     if (msgCollected.author.id === msg.author.id) {
                         modsFormatted.forEach(async (e, i) => {
                             var dateTime = new Date(formatted), msgContent,  today = new Date()
-                            // today.setHours(today.getHours() + 8)
+                            today.setHours(today.getHours() + 8)
                             const mod = e[1], modVal = e[0]
                             switch (mod) {
                                 case "month":
