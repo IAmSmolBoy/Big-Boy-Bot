@@ -25,16 +25,16 @@ async function addDeadline(msg, args, format) {
     channel = channel.id
     const twoDigits = (str) => `${str}`.length === 1 ? "0" + `${str}` : `${str}`
 
-    if (args.length > 0 && args.length < 5) {
-        var timeIdx = 0
-        if (args[0].split("/").length === 1 && args[0].split(":").length === 3) {
-                date = [today.getFullYear(), today.getMonth() + 1, today.getDate()].map(twoDigits)
-        }
-        else if (args[0].split("/").length === 3  && args[1].split(":").length === 3) {
-                date = args[0].split("/").reverse().map(twoDigits)
-                timeIdx++
-        }
-        time = args[timeIdx].split(":").map(twoDigits)
+    if (args.length > 0) {
+        date = args.filter(e => e.split("/").length === 3)
+        console.log(date, date.length)
+        if (date.length === 0) date = [today.getFullYear(), today.getMonth() + 1, today.getDate()].map(twoDigits)
+        else date = date[0].split("/").reverse().map(twoDigits)
+
+        time = args.filter(e => e.split(":").length === 3)
+        if (time.length > 0) time = time[0].split(":").map(twoDigits)
+        else time = null
+
         for (const arg in args) {
             if (args[arg].includes("@")) {
                 role = args[arg]
@@ -45,6 +45,7 @@ async function addDeadline(msg, args, format) {
     const taskInfo = [ date, time, channel ]
     if (taskInfo.includes(undefined) || taskInfo.includes(null)) return msg.channel.send("Invalid arguments. Format: " + format)
     const formatted = `${date.join("-")}T${time.join(":")}`
+    console.log(formatted)
 
     msg.channel.send("Send the reminder timings. Format: <number> <units> Example: 1 day, 2 day, 5 hour (Units: month, week, day, or hour)")
     const modCollector = new MessageCollector(msg.channel), modTypes = [ "month", "week", "day", "hour", "months", "weeks", "days", "hours" ]
@@ -53,7 +54,6 @@ async function addDeadline(msg, args, format) {
         if (msgCollected.author.id === msg.author.id) {
             const mods = msgCollected.content.split(",").map(mod => mod.split(" ").filter((e) => e !== ""))
             // console.log(mods)
-
             if (!mods.every((e) => {
                 for (const type of modTypes) switch(e.length) {
                     case 1:
@@ -87,7 +87,8 @@ async function addDeadline(msg, args, format) {
                     if (msgCollected.author.id === msg.author.id) {
                         modsFormatted.forEach(async (e, i) => {
                             var dateTime = new Date(formatted), msgContent,  today = new Date()
-                            today.setHours(today.getHours() + 8)
+                            // today.setHours(today.getHours() + 8)
+                            console.log(e, dateTime)
                             const mod = e[1], modVal = e[0]
                             switch (mod) {
                                 case "month":
@@ -225,10 +226,74 @@ async function resetComp (msg, args, format) {
 }
 
 async function reminder(msg, args, format) {
-    var today = new Date()
-    today.setHours(today.getHours() + 8)
+    // var today = new Date()
+    // today.setHours(today.getHours() + 8)
     // console.log(today.toLocaleTimeString(), today.getDay())
-    const days = [
+    // const days = [
+    //     [ "sun", "sunday" ],
+    //     [ "mon", "monday" ],
+    //     [ "tue", "tuesday" ],
+    //     [ "wed", "wednesday" ],
+    //     [ "thu", "thurs", "thursday" ],
+    //     [ "fri", "friday" ],
+    //     [ "sat", "saturday" ]
+    // ]
+    // var day = today.getDay(), time, role, channel = msg.mentions.channels.first() || msg.channel
+    // const guild = msg.guild.id
+    // channel = channel.id
+    // args.forEach(
+    //     arg => {
+    //         var [ dayCollected, timeCollected, roleCollected ] = Array(3).fill(false)
+    //         days.forEach(
+    //             (dayVal, i) => {
+    //                 if (!dayCollected && 
+    //                     isNaN(arg) && 
+    //                     dayVal.includes(arg.toLowerCase())
+    //                 ) {
+    //                     day = i
+    //                     dayCollected = true
+    //                 }
+    //             }
+    //         )
+    //         if (!timeCollected && 
+    //             arg.split(":").length === 3 && 
+    //             arg.split(":").every(
+    //                 timeVal => timeVal.length > 0 && !isNaN(timeVal) && parseInt(timeVal) < 60
+    //             )
+    //         ) {
+    //             time = arg.split(":").map(
+    //                 timeVal => parseInt(timeVal)
+    //             )
+    //             timeCollected = true
+    //         }
+    //         if (!roleCollected && 
+    //             (arg.startsWith("<@") && 
+    //             arg.endsWith(">")) ||
+    //             arg.startsWith("@")
+    //         ) {
+    //             role = arg
+    //             roleCollected = true
+    //         }
+    //     }
+    // )
+    // console.log(day, time, role)
+    // if (!((day || day === "0") && time)) return msg.channel.send(`Invalid arguments. Format: ${format}`)
+    // const collector = new MessageCollector(msg.channel)
+    // msg.channel.send("Please send your desired reminder message.")
+    // collector.on("collect",
+    //     async msgCollected => {
+    //         if (msgCollected.author.id === msg.author.id) {
+    //             const remind = new Reminder({ day, time, activity: msgCollected.content, role, channel, guild,  })
+    //             await remind.save()
+    //             msg.channel.send("Reminder saved")
+    //             collector.stop()
+    //         }
+    //     }
+    // )
+    // const remind = new Reminder({ day, time, role })
+
+    
+    const daysAvail = [
         [ "sun", "sunday" ],
         [ "mon", "monday" ],
         [ "tue", "tuesday" ],
@@ -236,60 +301,29 @@ async function reminder(msg, args, format) {
         [ "thu", "thurs", "thursday" ],
         [ "fri", "friday" ],
         [ "sat", "saturday" ]
-    ]
-    var day = today.getDay(), time, role, channel = msg.mentions.channels.first() || msg.channel
-    const guild = msg.guild.id
-    channel = channel.id
-    args.forEach(
-        arg => {
-            var [ dayCollected, timeCollected, roleCollected ] = Array(3).fill(false)
-            days.forEach(
-                (dayVal, i) => {
-                    if (!dayCollected && 
-                        isNaN(arg) && 
-                        dayVal.includes(arg.toLowerCase())
-                    ) {
-                        day = i
-                        dayCollected = true
-                    }
-                }
-            )
-            if (!timeCollected && 
-                arg.split(":").length === 3 && 
-                arg.split(":").every(
-                    timeVal => timeVal.length > 0 && !isNaN(timeVal) && parseInt(timeVal) < 60
-                )
-            ) {
-                time = arg.split(":").map(
-                    timeVal => parseInt(timeVal)
-                )
-                timeCollected = true
-            }
-            if (!roleCollected && 
-                (arg.startsWith("<@") && 
-                arg.endsWith(">")) ||
-                arg.startsWith("@")
-            ) {
-                role = arg
-                roleCollected = true
-            }
-        }
-    )
-    // console.log(day, time, role)
-    if (!((day || day === "0") && time)) return msg.channel.send(`Invalid arguments. Format: ${format}`)
-    const collector = new MessageCollector(msg.channel)
-    msg.channel.send("Please send your desired reminder message.")
-    collector.on("collect",
-        async msgCollected => {
-            if (msgCollected.author.id === msg.author.id) {
-                const remind = new Reminder({ day, time, activity: msgCollected.content, role, channel, guild,  })
-                await remind.save()
-                msg.channel.send("Reminder saved")
-                collector.stop()
-            }
-        }
-    )
-    // const remind = new Reminder({ day, time, role })
+    ], today = new Date()
+    // today.setHours(today.getHours() + 8)
+    var day = today.getDay(), time
+
+    if (args.length > 0) {
+        day = args.find(e => {
+            // console.log(e)
+            return daysAvail.some(i => i.includes(e.toLowerCase()))
+        })
+
+        time = args.find(e => {
+            // console.log(e)
+            return e.split(":").length === 3
+        })
+        if (time && time.split(":").every(e => !isNaN(e))) time.split(":").map(e => e.length === 1 ? "0" + e : e)
+
+        role = args.find(e => {
+            // console.log(e)
+            return e.startsWith("<@") && e.endsWith(">")
+    })
+    }
+    console.log(day, time, role)
+    if ([day, time].includes(null) || [day, time].includes(undefined)) return msg.channel.send("Invalid arguments. Format: " + format)
 }
 
 function helpMenu(msg, commandDict, pageNo = 1) {

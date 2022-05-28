@@ -12,7 +12,7 @@ const reqNum = {
 const reminderSchema = new Schema({
     day: reqNum,
     time: {
-        type: [
+        timeVal: [
             reqNum,
             reqNum,
             reqNum
