@@ -72,11 +72,11 @@ const commandDict = {
 
 client.on("ready", async () => {
     console.log(`I'm inferior bot. ${client.user.username}`)
-    client.user.setActivity(".help for help")
-    // client.user.setActivity("Maintenance")
+    // client.user.setActivity(".help for help")
+    client.user.setActivity("Maintenance")
     setInterval(async () => {
         const todayDate = new Date()
-        todayDate.setHours(todayDate.getHours() + 8)
+        // todayDate.setHours(todayDate.getHours() + 8)
         const tasks = await Task.find(), reminders = await Reminder.find()
         tasks.forEach(async e => {
             // console.log(e, todayDate)
