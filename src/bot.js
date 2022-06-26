@@ -70,13 +70,18 @@ const commandDict = {
     }
 }
 
+function getTodayDate () {
+    const today = new Date()
+    today.setHours(today.getHours() + 8)
+    return today
+}
+
 client.on("ready", async () => {
     console.log(`I'm inferior bot. ${client.user.username}`)
-    // client.user.setActivity(".help for help")
-    client.user.setActivity("Maintenance")
+    client.user.setActivity(".help for help")
+    // client.user.setActivity("Maintenance")
     setInterval(async () => {
-        const todayDate = new Date()
-        // todayDate.setHours(todayDate.getHours() + 8)
+        const todayDate = getTodayDate()
         const tasks = await Task.find(), reminders = await Reminder.find()
         tasks.forEach(async e => {
             // console.log(e, todayDate)

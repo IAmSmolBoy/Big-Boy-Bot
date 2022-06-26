@@ -1,6 +1,11 @@
 const Task = require("./models/task"), compHours = require("./models/compHours"), rr = require("./models/rr"), Reminder = require("./models/reminder")
 const { MessageEmbed, MessageCollector } = require('discord.js');
 var prefix = "."
+function getTodayDate () {
+    const today = new Date()
+    today.setHours(today.getHours() + 8)
+    return today
+}
 
 function clear(msg, args, format) {
     
@@ -21,9 +26,10 @@ function clear(msg, args, format) {
 }
 
 async function addDeadline(msg, args, format) {
-    var date, time, role, today = new Date(), channel = msg.mentions.channels.first() || msg.channel, guild = msg.guild.id
+    var date, time, role, channel = msg.mentions.channels.first() || msg.channel, guild = msg.guild.id
     channel = channel.id
     const twoDigits = (str) => `${str}`.length === 1 ? "0" + `${str}` : `${str}`
+    const today = getTodayDate()
 
     if (args.length > 0) {
         date = args.filter(e => e.split("/").length === 3)
@@ -45,7 +51,7 @@ async function addDeadline(msg, args, format) {
     const taskInfo = [ date, time, channel ]
     if (taskInfo.includes(undefined) || taskInfo.includes(null)) return msg.channel.send("Invalid arguments. Format: " + format)
     const formatted = `${date.join("-")}T${time.join(":")}`
-    console.log(formatted)
+    // console.log(formatted)
 
     msg.channel.send("Send the reminder timings. Format: <number> <units> Example: 1 day, 2 day, 5 hour (Units: month, week, day, or hour)")
     const modCollector = new MessageCollector(msg.channel), modTypes = [ "month", "week", "day", "hour", "months", "weeks", "days", "hours" ]
@@ -86,8 +92,7 @@ async function addDeadline(msg, args, format) {
                 msgCollector.on("collect", async (msgCollected) => {
                     if (msgCollected.author.id === msg.author.id) {
                         modsFormatted.forEach(async (e, i) => {
-                            var dateTime = new Date(formatted), msgContent,  today = new Date()
-                            // today.setHours(today.getHours() + 8)
+                            var dateTime = new Date(formatted), msgContent
                             console.log(e, dateTime)
                             const mod = e[1], modVal = e[0]
                             switch (mod) {
@@ -292,7 +297,6 @@ async function reminder(msg, args, format) {
     // )
     // const remind = new Reminder({ day, time, role })
 
-    
     const daysAvail = [
         [ "sun", "sunday" ],
         [ "mon", "monday" ],
@@ -301,8 +305,7 @@ async function reminder(msg, args, format) {
         [ "thu", "thurs", "thursday" ],
         [ "fri", "friday" ],
         [ "sat", "saturday" ]
-    ], today = new Date()
-    // today.setHours(today.getHours() + 8)
+    ], today = getTodayDate()
     var day = today.getDay(), time
 
     if (args.length > 0) {
